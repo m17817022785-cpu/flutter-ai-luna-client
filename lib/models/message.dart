@@ -2,47 +2,46 @@ enum MessageType { text, image }
 
 class Message {
   final String id;
-  final String role; // 'user' 或 'assistant'
-  String content;    // 文本内容或图片 URL
+  final String role; // 'user', 'assistant', 'system'
+  String content; // 流式更新需要可变
   final MessageType type;
-  bool isGenerating; // 是否处于 Stream 接收态
-  
-  // 多模态图像参数
-  final String? localFilePath;
-  final String? base64Image;
+  final String? localFilePath; // 关联的上传文件本地路径
+  final String? base64Image; // 上传图片的 base64 编码，用于多模态
+  bool isGenerating; // 是否正在处于打字机流式生成状态
+  final DateTime timestamp;
 
   Message({
     required this.id,
     required this.role,
     required this.content,
     this.type = MessageType.text,
-    this.isGenerating = false,
     this.localFilePath,
     this.base64Image,
-  });
+    this.isGenerating = false,
+    DateTime? timestamp,
+  }) : this.timestamp = timestamp ?? DateTime.now();
 
-  /// 转换为符合 OpenAI 规范的 API 格式 (适配 Vision 多模态模型)
+  // 转换成 OpenAI API 标准的消息格式
   Map<String, dynamic> toOpenAiMap() {
-    // 如果附带了图片，且是用户发送的信息，需转换为 content-list 格式
-    if (role == 'user' && base64Image != null) {
+    if (base64Image != null && base64Image!.isNotEmpty) {
+      // OpenAI 多模态消息格式
       return {
         'role': role,
         'content': [
           {
             'type': 'text',
-            'text': content.isNotEmpty ? content : '分析这张图片。',
+            'text': content.isNotEmpty ? content : '分析这张图片'
           },
           {
             'type': 'image_url',
             'image_url': {
-              'url': 'data:image/jpeg;base64,$base64Image',
+              'url': 'data:image/jpeg;base64,$base64Image'
             }
           }
         ]
       };
     }
-
-    // 普通文本格式
+    // 普通文本消息格式
     return {
       'role': role,
       'content': content,
