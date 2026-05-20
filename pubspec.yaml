@@ -1,0 +1,26 @@
+name: ai_image_generator
+description: A Flutter project for AI Image Generation and Chat.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  image_picker: ^1.0.4
+  provider: ^6.0.5
+  shared_preferences: ^2.2.1
+  path_provider: ^2.1.1
+  flutter_markdown: ^0.6.18
+  gal: ^2.2.1
+  permission_handler: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
