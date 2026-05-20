@@ -1,0 +1,34 @@
+# Flutter related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Android related
+**/android/**/generated/
+**/android/app/debug/
+**/android/app/release/
+**/android/app/profile/
+
+# Web related
+build/web/
+
+# Symbolication related
+app.*.symbols
+app.*.map.json
+
+# Environment
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
