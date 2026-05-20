@@ -39,7 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadSettings() async {
     final settings = await _settingsService.getSettings();
-    setState(() {      _apiKey = settings['apiKey']!;
+    setState(() {
+      _apiKey = settings['apiKey']!;
       _baseUrl = settings['baseUrl']!;
     });
   }
@@ -47,12 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
+        _scrollController.animateTo( 
           _scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
-      } 
+      }
     });
   }
 
@@ -149,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       backgroundColor: const Color(0xFF343541),
       appBar: AppBar(
         title: const Text('Luna AI', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
@@ -172,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Expanded( 
+          Expanded(
             child: _messages.isEmpty 
                 ? _buildEmptyState() 
                 : ListView.builder(
@@ -190,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
+    return Center( 
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -265,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return const Padding(
                               padding: EdgeInsets.all(20.0),
                               child: CircularProgressIndicator(color: Color(0xFF10A37F)),
-                            );
+                            ); 
                           },
                         ),
                       ),
@@ -311,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Icon(Icons.image, color: Color(0xFF10A37F)),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
+                      child: Text( 
                         '已选择待分析图片: ${_attachedFile!.path.split('/').last}',
                         style: const TextStyle(color: Colors.white, overflow: TextOverflow.ellipsis),
                       ),
@@ -328,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             Row(
               children: [
-                IconButton(
+                IconButton( 
                   icon: const Icon(Icons.add_photo_alternate, color: Colors.grey, size: 28),
                   onPressed: () async {
                     final picked = await ImagePicker().pickImage(
@@ -352,10 +353,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: Colors.grey.withOpacity(0.3)),
                     ),
-                    child: TextField(
+                    child: TextField( 
                       controller: _inputController,
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: const InputDecoration( 
                         hintText: '发送消息或输入画图提示词...',
                         hintStyle: TextStyle(color: Colors.grey),
                         border: InputBorder.none,
@@ -379,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
+  } 
 
   void _showSettingsDialog() {
     final keyCtrl = TextEditingController(text: _apiKey);
