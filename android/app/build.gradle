@@ -10,6 +10,9 @@ def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     flutterRoot = System.getenv('FLUTTER_ROOT')
 }
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in local.properties or FLUTTER_ROOT environment variable.")
+}
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -27,7 +30,6 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.example.ai_image_generator"
-    // 使用硬编码或 Flutter 默认值，确保 CI 环境不会因 local.properties 缺失而崩溃
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
@@ -54,7 +56,6 @@ android {
 
     buildTypes {
         release {
-            // CI 环境下使用 debug 签名进行测试构建
             signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
@@ -63,7 +64,7 @@ android {
 }
 
 flutter {
-    source ../..
+    source '../..'
 }
 
 dependencies {
