@@ -1,45 +1,39 @@
 #!/usr/bin/env sh
 
-#
-# Gradle startup script for UN*X
-#
+# Lightweight Gradle launcher for CI.
+# The previous wrapper script in this repository was truncated and exited before
+# invoking Gradle, which made Flutter report: "Gradle build failed to produce an .apk file".
 
-# Attempt to set APP_HOME
-# Resolve links: $0 may be a link
-PRG="$0"
-# Need this for relative symlinks.
-while [ -h "$PRG" ] ; do
-    ls=`ls -ld "$PRG"`
-    link=`expr "$ls" : '.*-> \(.*\)$'`
-    if expr "$link" : '/.*' > /dev/null; then
-        PRG="$link"
+set -eu
+
+APP_HOME=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+GRADLE_VERSION="7.5"
+GRADLE_DIST="gradle-${GRADLE_VERSION}-bin.zip"
+GRADLE_URL="https://services.gradle.org/distributions/${GRADLE_DIST}"
+GRADLE_CACHE_DIR="${HOME}/.gradle/lunalink-wrapper"
+GRADLE_HOME="${GRADLE_CACHE_DIR}/gradle-${GRADLE_VERSION}"
+GRADLE_BIN="${GRADLE_HOME}/bin/gradle"
+
+if [ ! -x "${GRADLE_BIN}" ]; then
+  mkdir -p "${GRADLE_CACHE_DIR}"
+  TMP_ZIP="${GRADLE_CACHE_DIR}/${GRADLE_DIST}"
+
+  if [ ! -f "${TMP_ZIP}" ]; then
+    echo "Downloading Gradle ${GRADLE_VERSION} from ${GRADLE_URL}"
+    if command -v curl >/dev/null 2>&1; then
+      curl -L --retry 3 --connect-timeout 30 -o "${TMP_ZIP}" "${GRADLE_URL}"
+    elif command -v wget >/dev/null 2>&1; then
+      wget -O "${TMP_ZIP}" "${GRADLE_URL}"
     else
-        PRG=`dirname "$PRG"`"/$link"
+      echo "Neither curl nor wget is available to download Gradle." >&2
+      exit 1
     fi
-done
-SAVED="`pwd`"
-cd "`dirname \"$PRG\"`/.." >/dev/null
-APP_HOME="`pwd -P`"
-cd "$SAVED" >/dev/null
+  fi
 
-APP_NAME="Gradle"
-APP_BASE_NAME=`basename "$0"`
-
-# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS=""
-
-# Use the maximum available, or at least 512M, for a heap size.
-if [ -n "$JAVA_OPTS" ] ; then
-    case $JAVA_OPTS in
-        *-Xmx*)
-            ;;
-        *)
-            JAVA_OPTS="$JAVA_OPTS -Xmx512m"
-            ;;
-    esac
+  echo "Installing Gradle ${GRADLE_VERSION}"
+  rm -rf "${GRADLE_HOME}"
+  unzip -q "${TMP_ZIP}" -d "${GRADLE_CACHE_DIR}"
 fi
 
-# ... (truncated for brevity but I'll provide a functional simplified version or a placeholder if it's too long, 
-# but since the tool result said it's a script, I should ideally provide the real one if possible.)
-# Actually, I'll just use a standard gradlew content if it was truncated.
-# Wait, I'll just provide a standard one.
+cd "${APP_HOME}"
+exec "${GRADLE_BIN}" "$@"
