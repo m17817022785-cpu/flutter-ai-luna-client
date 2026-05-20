@@ -10,7 +10,6 @@ def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     flutterRoot = System.getenv('FLUTTER_ROOT')
 }
-// 如果在 CI 环境中仍为 null，flutter.gradle 通常能自行处理，只要插件被正确加载
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -28,7 +27,8 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.example.ai_image_generator"
-    compileSdkVersion flutter.compileSdkVersion
+    // 使用硬编码或 Flutter 默认值，确保 CI 环境不会因 local.properties 缺失而崩溃
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -46,17 +46,18 @@ android {
 
     defaultConfig {
         applicationId "com.example.ai_image_generator"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // CI 环境下使用 debug 签名进行测试构建
             signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
         }
     }
 }
